@@ -1,114 +1,106 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
-  StatusBar,
+  TouchableOpacity,
+  TextInput,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const App: () => React$Node = () => {
+const Tarefa = ({tarefa}) => {
+  const [selecionada, seleciona] = useState(false);
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+    <TouchableOpacity
+      style={styles.tarefa}
+      onPress={() => seleciona(!selecionada)}>
+      {selecionada && <Text style={{marginRight: 10}}>X</Text>}
+      <Text>{tarefa}</Text>
+    </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+const ListaDeTarefas = ({tarefas}) => {
+  return (
+    <View style={styles.listaTarefas}>
+      {tarefas.map((tarefa) => (
+        <Tarefa tarefa={tarefa} />
+      ))}
+    </View>
+  );
+};
 
+const EntradaDeTexto = ({nomeTarefa, setNomeTarefa}) => {
+  return (
+    <TextInput
+      style={styles.entradaDeTexto}
+      value={nomeTarefa}
+      onChangeText={(novoTexto) => setNomeTarefa(novoTexto)}
+    />
+  );
+};
+
+const BotaoAdicionar = ({adicionaTarefa}) => {
+  return (
+    <TouchableOpacity
+      style={styles.botao}
+      onPress={adicionaTarefa}>
+      <Text style={styles.textoBotao}>ADICIONAR TAREFA</Text>
+    </TouchableOpacity>
+  );
+};
+
+const App = () => {
+  const [tarefas, setTarefas] = useState([]);
+  const [conteudoCaixaDeTexto, setNomeTarefa] = useState('');
+
+  const adicionaTarefa = (tarefa) => {
+    setNomeTarefa('');
+    setTarefas([...tarefas, tarefa]);
+  };
+
+  return (
+    <SafeAreaView style={{flex:1, margin: 10}}>
+      <ListaDeTarefas tarefas={tarefas} />
+      <EntradaDeTexto
+        nomeTarefa={conteudoCaixaDeTexto}
+        setNomeTarefa={setNomeTarefa}
+      />
+      <BotaoAdicionar
+        adicionaTarefa={() => adicionaTarefa(conteudoCaixaDeTexto)}
+      />
+    </SafeAreaView>
+  );
+};
+
+const styles = {
+  listaTarefas: {
+    flex: 1,
+    borderWidth: 2,
+    borderColor: '#000',
+  },
+  tarefa: {
+    flexDirection: 'row',
+    paddingLeft: 10,
+    paddingVertical: 10,
+  },
+  entradaDeTexto: {
+    height: 100,
+    borderWidth: 2,
+    borderColor: '#000',
+    marginVertical: 10,
+  },
+  botao: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000',
+    color: '#FFF',
+    borderRadius: 5,
+    height: 50,
+    marginVertical: 5,
+  },
+  textoBotao: {
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+};
 export default App;

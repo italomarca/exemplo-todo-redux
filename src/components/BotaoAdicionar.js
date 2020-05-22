@@ -1,9 +1,20 @@
 import React from 'react';
 import {TouchableOpacity, Text} from 'react-native';
+import {connect} from 'react-redux';
 
-const BotaoAdicionar = ({adicionaTarefa}) => {
+import {
+  adicionarTarefa,
+  atualizarConteudoCaixaDeTexto,
+} from '../actions/tarefas';
+
+const BotaoAdicionar = ({conteudoDaCaixaDeTexto, dispatch}) => {
   return (
-    <TouchableOpacity style={styles.botao} onPress={adicionaTarefa}>
+    <TouchableOpacity
+      style={styles.botao}
+      onPress={() => {
+        dispatch(adicionarTarefa(conteudoDaCaixaDeTexto));
+        dispatch(atualizarConteudoCaixaDeTexto(''));
+      }}>
       <Text style={styles.textoBotao}>ADICIONAR TAREFA</Text>
     </TouchableOpacity>
   );
@@ -25,4 +36,10 @@ const styles = {
   },
 };
 
-export default BotaoAdicionar;
+const mapStateToProps = (store) => {
+  return {
+    conteudoDaCaixaDeTexto: store.conteudoDaCaixaDeTexto,
+  };
+};
+
+export default connect(mapStateToProps)(BotaoAdicionar);
